@@ -13,3 +13,8 @@ import axios from "axios";
  export const deletePost = (id) => {
    return api.delete(`/posts/${id}`);
  };
+
+ //  post Methods 
+ export const postData =(post)=>{
+   return api.post("/posts",post);
+};
