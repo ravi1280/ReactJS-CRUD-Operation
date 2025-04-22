@@ -1,5 +1,6 @@
 import { useEffect ,useState} from "react";
-import { getPost } from "../api/PostApi";
+import { deletePost, getPost } from "../api/PostApi";
+import { Form } from "./Form";
 
 export const Posts = () => {
   
@@ -15,21 +16,52 @@ export const Posts = () => {
     getPostData();
   }, []);
 
+  // function to delete post
+
+  const handleDeletePost = async(id)=>{
+    try {
+      const res = await deletePost(id);
+     if(res.status === 200){
+      const newUpdatedPost = data.filter((curPost)=>{
+        return curPost.id === id;
+      });
+      setData(newUpdatedPost);
+     }else{
+      console.log("Fail to delete Post:", res.status)
+     }
+    } catch (error) {
+      console.log("Error");
+      
+    }
+     
+  };
+
   return (
-    <section className="section-post">
-      <ul>
-        {data.map((curElem) => {
-          const { id, title, body } = curElem;
-          return (
-            <li key={id}>
-              <p>Title : {title}</p>
-              <p>Body : {body}</p>
-              <button className="bg-green-400">Edit</button>
-              <button className="bg-orange-400">Delete</button>
-            </li>
-          );
-        })}
-      </ul>
-    </section>
+    <>
+      <section>
+        <Form data={data} setData={setData}/>
+      </section>
+
+      <section className="section-post">
+        <ol>
+          {data.map((curElem) => {
+            const { id, title, body } = curElem;
+            return (
+              <li key={id}>
+                <p>Title : {title}</p>
+                <p>Body : {body}</p>
+                <button className="bg-green-400">Edit</button>
+                <button
+                  className="bg-orange-400"
+                  onClick={() => handleDeletePost(id)}
+                >
+                  Delete
+                </button>
+              </li>
+            );
+          })}
+        </ol>
+      </section>
+    </>
   );
 };
